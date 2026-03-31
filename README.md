@@ -50,13 +50,13 @@ You can install Postman via this website: https://www.postman.com/downloads/
 ## Mandatory Checklists (Publisher)
 -   [ ] Clone https://gitlab.com/ichlaffterlalu/bambangshop to a new repository.
 -   **STAGE 1: Implement models and repositories**
-    -   [ ] Commit: `Create Subscriber model struct.`
-    -   [ ] Commit: `Create Notification model struct.`
-    -   [ ] Commit: `Create Subscriber database and Subscriber repository struct skeleton.`
-    -   [ ] Commit: `Implement add function in Subscriber repository.`
-    -   [ ] Commit: `Implement list_all function in Subscriber repository.`
-    -   [ ] Commit: `Implement delete function in Subscriber repository.`
-    -   [ ] Write answers of your learning module's "Reflection Publisher-1" questions in this README.
+    -   [✔] Commit: `Create Subscriber model struct.`
+    -   [✔] Commit: `Create Notification model struct.`
+    -   [✔] Commit: `Create Subscriber database and Subscriber repository struct skeleton.`
+    -   [✔] Commit: `Implement add function in Subscriber repository.`
+    -   [✔] Commit: `Implement list_all function in Subscriber repository.`
+    -   [✔] Commit: `Implement delete function in Subscriber repository.`
+    -   [✔] Write answers of your learning module's "Reflection Publisher-1" questions in this README.
 -   **STAGE 2: Implement services and controllers**
     -   [ ] Commit: `Create Notification service struct skeleton.`
     -   [ ] Commit: `Implement subscribe function in Notification service.`
@@ -77,6 +77,32 @@ This is the place for you to write reflections:
 ### Mandatory (Publisher) Reflections
 
 #### Reflection Publisher-1
+
+1. In the Observer pattern diagram explained by the Head First Design Pattern book, Subscriber
+is defined as an interface. Explain based on your understanding of Observer design patterns,
+do we still need an interface (or trait in Rust) in this BambangShop case, or a single Model
+struct is enough?
+
+In Head First Design Patterns book, the Observer is an interface because the Publisher needs to call an update() method on local objects. Using an interface allows the Publisher to be connected, it doesn't care what class the observer is, as long as it implements update().
+
+However, in Bambangshop, the Observers (Subscribers) aren't local objects sitting in the same memory space. They are completely separate web applications running on different ports. Our Publisher communicates over the network via HTTP POST requests. Therefore, we don't need a trait in Rust to handle different object types locally. We only need a simple data container (a struct) to hold the information required to make that web request.
+
+2. id in Program and url in Subscriber is intended to be unique. Explain based on your
+understanding, is using Vec (list) sufficient or using DashMap (map/dictionary) like we currently
+use is necessary for this case?
+
+By using Vec (list), it means that everytime we need to find the unique url, we need to iterate through the list one by one which will result in a compleixity of O(n). On th other hand, by using DashMap (map/dictionary), the lookup, insertion and deletion will all only take O(1) operations which is drastically faster. For this case, using DashMap will be better.
+
+3. When programming using Rust, we are enforced by rigorous compiler constraints to make a
+thread-safe program. In the case of the List of Subscribers (SUBSCRIBERS) static variable, we
+used the DashMap external library for thread safe HashMap. Explain based on your
+understanding of design patterns, do we still need DashMap or we can implement Singleton
+pattern instead?
+
+The Singleton pattern ensures that a class has only one instance and provides a global point of access to it. In our code, we are implementing a Singleton pattern to create a single, globally accessible SUBSCRIBERS database.
+
+However, simply making something a Singleton does not make it thread-safe. If multiple requests try to add or remove subscribers from our Singleton at the exact same time, it will cause a data race. We need DashMap inside our Singleton because it acts like a standard HashMap wrapped in concurrent locking mechanisms. It ensures that multiple threads can read and write to our Singleton safely.
+
 
 #### Reflection Publisher-2
 
