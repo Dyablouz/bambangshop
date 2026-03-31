@@ -48,7 +48,7 @@ You can install Postman via this website: https://www.postman.com/downloads/
     (You might want to use `cargo check` if you only need to verify your work without running the app.)
 
 ## Mandatory Checklists (Publisher)
--   [ ] Clone https://gitlab.com/ichlaffterlalu/bambangshop to a new repository.
+-   [✔] Clone https://gitlab.com/ichlaffterlalu/bambangshop to a new repository.
 -   **STAGE 1: Implement models and repositories**
     -   [✔] Commit: `Create Subscriber model struct.`
     -   [✔] Commit: `Create Notification model struct.`
@@ -58,18 +58,18 @@ You can install Postman via this website: https://www.postman.com/downloads/
     -   [✔] Commit: `Implement delete function in Subscriber repository.`
     -   [✔] Write answers of your learning module's "Reflection Publisher-1" questions in this README.
 -   **STAGE 2: Implement services and controllers**
-    -   [ ] Commit: `Create Notification service struct skeleton.`
-    -   [ ] Commit: `Implement subscribe function in Notification service.`
-    -   [ ] Commit: `Implement subscribe function in Notification controller.`
-    -   [ ] Commit: `Implement unsubscribe function in Notification service.`
-    -   [ ] Commit: `Implement unsubscribe function in Notification controller.`
-    -   [ ] Write answers of your learning module's "Reflection Publisher-2" questions in this README.
+    -   [✔] Commit: `Create Notification service struct skeleton.`
+    -   [✔] Commit: `Implement subscribe function in Notification service.`
+    -   [✔] Commit: `Implement subscribe function in Notification controller.`
+    -   [✔] Commit: `Implement unsubscribe function in Notification service.`
+    -   [✔] Commit: `Implement unsubscribe function in Notification controller.`
+    -   [✔] Write answers of your learning module's "Reflection Publisher-2" questions in this README.
 -   **STAGE 3: Implement notification mechanism**
-    -   [ ] Commit: `Implement update method in Subscriber model to send notification HTTP requests.`
-    -   [ ] Commit: `Implement notify function in Notification service to notify each Subscriber.`
-    -   [ ] Commit: `Implement publish function in Program service and Program controller.`
-    -   [ ] Commit: `Edit Product service methods to call notify after create/delete.`
-    -   [ ] Write answers of your learning module's "Reflection Publisher-3" questions in this README.
+    -   [✔] Commit: `Implement update method in Subscriber model to send notification HTTP requests.`
+    -   [✔] Commit: `Implement notify function in Notification service to notify each Subscriber.`
+    -   [✔] Commit: `Implement publish function in Program service and Program controller.`
+    -   [✔] Commit: `Edit Product service methods to call notify after create/delete.`
+    -   [✔] Write answers of your learning module's "Reflection Publisher-3" questions in this README.
 
 ## Your Reflections
 This is the place for you to write reflections:
@@ -125,3 +125,24 @@ is helpful to help your Group Project or any of your future software engineering
 Postman is a tool that lets us test REST API endpoints directly without needing to build a frontend first. For future collaborative work like Group Projects, its most helpful features include Collections and Workspaces for easily sharing API documentation with my teammate, Environment Variables for quickly switching between local and production servers without rewriting URLs, and Automated Tests to easily verify that our endpoints return the correct status codes and data structures.
 
 #### Reflection Publisher-3
+
+1. Observer Pattern has two variations: Push model (publisher pushes data to subscribers) and
+Pull model (subscribers pull data from publisher). In this tutorial case, which variation of
+Observer Pattern that we use?
+
+In this tutorial, we are using the Push model. The Publisher actively pushes the data directly to the Subscribers via an HTTP POST request as soon as an event occurs.
+
+2. What are the advantages and disadvantages of using the other variation of Observer Pattern
+for this tutorial case? (example: if you answer Q1 with Push, then imagine if we used Pull)
+
+If we used the Pull model, the Publisher would only notify the Subscribers that an event happened, and the Subscribers would then have to make a separate HTTP GET request back to the Publisher to fetch the actual product details.
+
+Advantage: The Subscriber only pulls the exact data it needs. If the Publisher sends a massive payload but the Subscriber only needs the title, the Pull model saves bandwidth.
+
+Disadvantage: It is highly inefficient for this specific REST API scenario. It requires two network requests instead of just one. This increases latency and server load on the Publisher, as it has to handle incoming requests immediately after sending out the pings.
+
+3. Explain what will happen to the program if we decide to not use multi-threading in the
+notification process.
+
+If we don't use multi-threading, the Publisher would have to send the HTTP POST requests sequentially. It would wait for Subscriber A to receive the notification and respond before it attempts to send the notification to Subscriber B. If one subscriber's server is slow, offline, or times out, the entire notification process stop. Multi-threading allows the Publisher to send notifications concurrently without waiting, making the system significantly faster and more resilient.
+
