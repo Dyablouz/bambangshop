@@ -103,7 +103,25 @@ The Singleton pattern ensures that a class has only one instance and provides a 
 
 However, simply making something a Singleton does not make it thread-safe. If multiple requests try to add or remove subscribers from our Singleton at the exact same time, it will cause a data race. We need DashMap inside our Singleton because it acts like a standard HashMap wrapped in concurrent locking mechanisms. It ensures that multiple threads can read and write to our Singleton safely.
 
-
 #### Reflection Publisher-2
+
+1. In the Model-View Controller (MVC) compound pattern, there is no “Service” and “Repository”.
+Model in MVC covers both data storage and business logic. Explain based on your
+understanding of design principles, why we need to separate “Service” and “Repository” from
+a Model?
+
+If we let only Model to handle data structure, logic and accessing database, Model will be very big and complex. To resolve it, we apply the Single Responsibility Principle and Separation of Concerns so Model will only handle the data structure, repository can handle the interaction with database, service will handle the logic. With this, our code will be easier to be read and maintain.
+
+2. What happens if we only use the Model? Explain your imagination on how the interactions
+between each model (Program, Subscriber, Notification) affect the code complexity for
+each model?
+
+If every architecture revolves around Model, it will result in high complexity for the code. If we only used Models in the Bambangshop, the Product model would have to handle the entire workflow whenever a new product is created. It would need the internal logic to search through the entire database of subscribers, construct the Notification object itself, and manually execute HTTP POST requests to each subscriber's URL. This forces the Model to understand every networking details and the internal storage mechanisms of entirely different domains. If we ever wanted to change how notifications are delivered, we would have to rewrite the core Product model, which directly violates good software design principles.
+
+3. Have you explored more about Postman? Tell us how this tool helps you to test your current
+work. You might want to also list which features in Postman you are interested in or feel like it
+is helpful to help your Group Project or any of your future software engineering projects.
+
+Postman is a tool that lets us test REST API endpoints directly without needing to build a frontend first. For future collaborative work like Group Projects, its most helpful features include Collections and Workspaces for easily sharing API documentation with my teammate, Environment Variables for quickly switching between local and production servers without rewriting URLs, and Automated Tests to easily verify that our endpoints return the correct status codes and data structures.
 
 #### Reflection Publisher-3
